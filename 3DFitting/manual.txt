@@ -1,0 +1,66 @@
+particles.h //质点弹簧模型结构定义
+
+#define PTCAMT 100 //质点总个数
+extern const GLfloat CollideCoefficient;
+extern const GLfloat StructStiff; //结构弹簧劲度系数
+extern const GLfloat ShearStiff; //剪切弹簧劲度系数
+extern const GLfloat BendStiff; //弯曲弹簧劲度系数
+extern const GLfloat Mass;
+
+extern M3DVector3f sphereCentre; //centre of the sphere
+extern GLfloat sphereRatio; //ratio of the sphere
+extern GLfloat tableAltitude; //height of table surface
+extern GLfloat minForce;
+extern const GLfloat collisionA;
+extern const GLfloat collisionB;
+
+struct Particle {
+	int num; //质点序号
+	GLfloat Mass;
+	M3DVector3f position, pre_position, next_position;
+	M3DVector3f force;
+	int structadj[4]; //structual constraint 结构弹簧
+	int shearadj[4]; //Shear constraint 剪切弹簧
+	int bendadj[8]; //Bending constraint 弯曲弹簧
+	M3DVector3f structorg[4]; //origin length of structual spring 弹簧原长（矢量）
+	M3DVector3f shearorg[4]; //origin length of shear spring
+	M3DVector3f bendorg[4]; //origin length of bending spring
+};
+extern Particle ClothLnk[PTCAMT]; //质点邻接表
+extern M3DVector3f collideForce; //碰撞产生的力
+
+inline bool isCollision(int currentPtc, M3DVector3f point, GLfloat distance) {
+
+void initPtc(Particle *, int, GLfloat, M3DVector3f, int *, int *, int *); //初始化质点
+
+inline void structForce(M3DVector3f &shift) { //位移得出结构弹簧的力
+inline void shearForce(M3DVector3f &shift) { //位移得出剪切弹簧的力
+inline void bendForce(M3DVector3f &shift) { //位移得出弯曲弹簧的力
+
+void getInternalForce(int); //得到布内部作用力（质点弹簧模型之间的力）
+inline bool isCollision(int, M3DVector3f, GLfloat);
+bool isCollision(int);
+void getCollisionForce(int); //得到布外部作用力（重力，碰撞产生的力）
+void addForce(int, M3DVector3f);
+
+inline void clearForce(int currentPtc) { //初始化质点的力
+
+//////////////////////////////////////////////////////////////////
+iofile.h //文件输入输出
+
+void fileOut(void); //质点的信息输入到文件里
+void initClothFromFile(void); //从文件初始化质点
+
+//////////////////////////////////////////////////////////////////
+glparameters.h //包含了基本的头文件
+
+//////////////////////////////////////////////////////////////////
+effect.h //工程逻辑相关内容
+
+extern const GLfloat TimeStep; //积分步长
+void initEnviro(void); //初始化环境
+void getForce(int); //计算质点受力
+void nextPosition(int); //计算下一个积分步长质点位置
+void needStop(int); //（未使用）
+void refreshPosition(void); //刷新质点位置（使用在nextPosition之后）
+void simulation(void);
